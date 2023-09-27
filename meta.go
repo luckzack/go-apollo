@@ -16,8 +16,8 @@ const (
 )
 
 var metaServer = map[string]string{
-	"LOCAL": "http://dev.apollo.ai-arena.qq.com",
-	ENV_DEV: "http://dev.apollo.ai-arena.qq.com",
+	"LOCAL": "http://your_domain.com",
+	ENV_DEV: "http://your_domain.com",
 	ENV_FAT: "http://172.16.80.59:31760",
 	ENV_UAT: "http://172.16.0.157:30682",
 	ENV_PRO: "http://172.16.1.173:31639",

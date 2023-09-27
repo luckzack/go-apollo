@@ -10,6 +10,7 @@ import (
 
 const ProjectKey = "project"
 const ServiceKey = "service"
+const EnvKey = "env"
 
 // see: http://cfg.teic.woa.com/apollo/config.html?#/appid=test_app
 func getConfig() (*Config, error) {
