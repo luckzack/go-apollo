@@ -9,7 +9,7 @@ import (
 )
 
 type conf struct {
-	env, appId, cluster, namespace, server string
+	env, appID, cluster, namespace, server string
 }
 
 var (
@@ -20,14 +20,14 @@ var (
 )
 
 func SetAppIDAndEnv(appID, envName string) {
-	defaultConf.appId = appID
+	defaultConf.appID = appID
 
 	switch strings.ToLower(envName) {
 	case "", "local":
 		defaultConf.env = ENV_DEV
-	case "dev", "development":
+	case "dev", "development", "fat":
 		defaultConf.env = ENV_FAT
-	case "test":
+	case "test", "uat":
 		defaultConf.env = ENV_UAT
 	case "pro", "prod", "production":
 		defaultConf.env = ENV_PRO
@@ -35,18 +35,19 @@ func SetAppIDAndEnv(appID, envName string) {
 
 }
 
-// 从启动参数中读取app.id 及 env
+func SetMetaServer(m map[string]string) {
+	metaServer = m
+}
+
 func Start() error {
-	//appId, env, cluster := parseOsArgs()
-	//return startWithCluster(appId, env, cluster)
-	return startWithCluster(defaultConf.appId, defaultConf.env, defaultConf.cluster)
+	return startWithCluster(defaultConf.appID, defaultConf.env, "default")
 }
 
-func start(appId, envVal string) error {
-	return startWithCluster(appId, envVal, "default")
+func start(appID, envName string) error {
+	return startWithCluster(appID, envName, "default")
 }
 
-func startWithCluster(appId, envVal, cluster string) error {
+func startWithCluster(appID, envName, cluster string) error {
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -54,8 +55,8 @@ func startWithCluster(appId, envVal, cluster string) error {
 		}
 	}()
 
-	defaultConf.appId = appId
-	defaultConf.env = envVal
+	defaultConf.appID = appID
+	defaultConf.env = envName
 	defaultConf.cluster = cluster
 	if defaultConf.env != "" {
 		url, ok := metaServer[defaultConf.env]
@@ -64,7 +65,7 @@ func startWithCluster(appId, envVal, cluster string) error {
 		}
 	}
 
-	if defaultConf.appId == "" {
+	if defaultConf.appID == "" {
 		return fmt.Errorf("app.id not define")
 	}
 

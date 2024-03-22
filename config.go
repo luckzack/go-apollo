@@ -18,25 +18,6 @@ import (
 
 var logger = log.WithField("module", "apollo")
 
-//func parseOsArgs() (appId, env, cluster string) {
-//	//appId = os.Getenv(consts.AppIdKey)
-//	//env = os.Getenv(consts.EnvKey)
-//
-//	appId = configs.GetAppID()
-//	env = configs.GetEnv()
-//	switch strings.ToLower(env) {
-//	case "", "local":
-//		env = ENV_DEV
-//	case "dev", "development":
-//		env = ENV_FAT
-//	case "test":
-//		env = ENV_UAT
-//	case "pro", "prod", "production":
-//		env = ENV_PRO
-//	}
-//	return
-//}
-
 type Config struct {
 	conf       *conf
 	server     configServerOpt
@@ -55,7 +36,7 @@ type Notice struct {
 	NewValues map[string]string
 }
 
-//检查指定key是不是有更新
+// 检查指定key是不是有更新
 func (notice *Notice) IsChange(key string) bool {
 
 	v, ok := notice.NewValues[key]
@@ -69,7 +50,7 @@ func (notice *Notice) IsChange(key string) bool {
 	return v == o
 }
 
-//获取变更的key 列表
+// 获取变更的key 列表
 func (notice *Notice) GetChangeKeys() (keys []string) {
 
 	keys = make([]string, 0)
@@ -118,7 +99,7 @@ type cache struct {
 }
 
 type configuration struct {
-	AppID         string            `json:"appId,omitempty"`
+	AppID         string            `json:"appID,omitempty"`
 	Cluster       string            `json:"cluster,omitempty"`
 	NameSpace     string            `json:"namespaceName,omitempty"`
 	Configuration map[string]string `json:"configurations,omitempty"`
@@ -128,7 +109,7 @@ func (config *Config) updateConfig(namespace string) error {
 
 	c := &conf{
 		env:       defaultConf.env,
-		appId:     defaultConf.appId,
+		appID:     defaultConf.appID,
 		cluster:   defaultConf.cluster,
 		server:    defaultConf.server,
 		namespace: namespace,
@@ -160,7 +141,7 @@ func (config *Config) updateConfig(namespace string) error {
 		logger.Warnf("config data empty, url: %s, status: %d", url, rsp.StatusCode)
 	}
 
-	logger.Infof("Loaded lasted config from apollo success %s %s", config.conf.appId, config.conf.env)
+	logger.Infof("Loaded lasted config from apollo success %s %s", config.conf.appID, config.conf.env)
 	config.lastUpdate = time.Now()
 	return saveToFile(data, c)
 
@@ -513,20 +494,20 @@ func saveToFile(bytes []byte, conf *conf) error {
 func getDir(conf *conf) string {
 	switch runtime.GOOS {
 	case "windows":
-		return fmt.Sprintf("%s\\.apollo\\%s\\config-cache", getHomeDir(), conf.appId)
+		return fmt.Sprintf("%s\\.apollo\\%s\\config-cache", getHomeDir(), conf.appID)
 	default:
 		return fmt.Sprintf("%s/.apollo/%s/config-cache", getHomeDir(),
-			conf.appId)
+			conf.appID)
 	}
 }
 func getFileName(conf *conf) string {
 	switch runtime.GOOS {
 	case "windows":
 		return fmt.Sprintf("%s\\.apollo\\%s\\config-cache\\%s+%s+%s.properties", getHomeDir(),
-			conf.appId, conf.appId, conf.cluster, conf.namespace)
+			conf.appID, conf.appID, conf.cluster, conf.namespace)
 	default:
 		return fmt.Sprintf("%s/.apollo/%s/config-cache/%s+%s+%s.properties", getHomeDir(),
-			conf.appId, conf.appId, conf.cluster, conf.namespace)
+			conf.appID, conf.appID, conf.cluster, conf.namespace)
 	}
 }
 

@@ -1,4 +1,4 @@
-module github.com/luckpunk/apollo_client_go
+module github.com/luckzack/go-apollo
 
 go 1.18
 

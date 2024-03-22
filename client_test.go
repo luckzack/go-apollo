@@ -14,11 +14,13 @@ const EnvKey = "env"
 
 // see: http://cfg.teic.woa.com/apollo/config.html?#/appid=test_app
 func getConfig() (*Config, error) {
+	SetMetaServer(map[string]string{
+		ENV_DEV: "http://127.0.0.1:8080",
+		ENV_FAT: "http://127.0.0.2:8080",
+		ENV_UAT: "http://127.0.0.3:8080",
+		ENV_PRO: "http://127.0.0.4:8080",
+	})
 	SetAppIDAndEnv("test_app", "local")
-	err := Start()
-	if err != nil {
-		return nil, err
-	}
 
 	c, err := GetConfig()
 	if err != nil {
@@ -42,7 +44,6 @@ func getInst() (*Config, error) {
 
 // go test ./ -v -test.run=TestConfig_GetInt
 func TestConfig_GetInt(t *testing.T) {
-	t.Log("os:", runtime.GOOS)
 
 	c, err := getConfig()
 	if err != nil {
@@ -52,7 +53,6 @@ func TestConfig_GetInt(t *testing.T) {
 	}
 
 	t.Log(c.GetInt("sample_int", 0))
-	// return 1024
 }
 
 // go test ./ -v -test.run=TestConfig_GetString1

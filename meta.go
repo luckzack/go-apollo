@@ -16,11 +16,10 @@ const (
 )
 
 var metaServer = map[string]string{
-	"LOCAL": "http://your_domain.com",
-	ENV_DEV: "http://your_domain.com",
-	ENV_FAT: "http://172.16.80.59:31760",
-	ENV_UAT: "http://172.16.0.157:30682",
-	ENV_PRO: "http://172.16.1.173:31639",
+	ENV_DEV: "http://127.0.0.1:8080",
+	ENV_FAT: "http://127.0.0.2:8080",
+	ENV_UAT: "http://127.0.0.3:8080",
+	ENV_PRO: "http://127.0.0.4:8080",
 }
 
 type application struct {
@@ -105,7 +104,7 @@ func (c *configServer) getConfigUrl(conf *conf) (string, error) {
 
 	return fmt.Sprintf("%s/configs/%s/%s/%s?ip=%s",
 		addr,
-		conf.appId,
+		conf.appID,
 		conf.cluster,
 		conf.namespace,
 		LocalIP()), nil
@@ -123,8 +122,8 @@ func (c *configServer) getNotifyUrl(notify *notify, conf *conf) (string, error) 
 
 	n := notify.getNotifyString()
 	return fmt.Sprintf(
-		"%s/notifications/v2?appId=%s&cluster=%s&notifications=%s",
-		addr, conf.appId, conf.cluster, url.QueryEscape(n)), nil
+		"%s/notifications/v2?appID=%s&cluster=%s&notifications=%s",
+		addr, conf.appID, conf.cluster, url.QueryEscape(n)), nil
 }
 
 func (c *configServer) getOneInstance() (instance, error) {
