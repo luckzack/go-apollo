@@ -17,27 +17,27 @@ import (
 )
 
 func init(){
-	// 注册你的多个环境的 meta server
-	apollo.SetMetaServer(map[string]string{
+    // 注册你的多个环境的 meta server
+    apollo.SetMetaServer(map[string]string{
         ENV_DEV: "http://127.0.0.1:8080",
         ENV_FAT: "http://127.0.0.2:8080",
         ENV_UAT: "http://127.0.0.3:8080",
         ENV_PRO: "http://127.0.0.4:8080",
     })
-	
-	// 配置当前使用的应用id和环境名
-  	apollo.SetAppIDAndEnv("<app_id>", "dev")
+        
+    // 配置当前使用的应用id和环境名
+    apollo.SetAppIDAndEnv("<app_id>", "dev")
 	
 }
 
 func main(){
-	// 获取配置实例
-	c, err := apollo.GetConfig()
-	if err != nil {
-		return nil, err
-	}
-	// 拉取指定配置
-	fmt.Println(c.GetString("sample_string"))
+    // 获取配置实例
+    c, err := apollo.GetConfig()
+    if err != nil {
+        log.Panic(err)
+    }
+    // 拉取指定配置
+    fmt.Println(c.GetString("sample_string"))
 }
 ```
 

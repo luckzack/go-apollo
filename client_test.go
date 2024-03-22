@@ -2,9 +2,6 @@ package apollo
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"runtime"
 	"testing"
 )
 
@@ -12,21 +9,19 @@ const ProjectKey = "project"
 const ServiceKey = "service"
 const EnvKey = "env"
 
-// see: http://cfg.teic.woa.com/apollo/config.html?#/appid=test_app
-func getConfig() (*Config, error) {
+func init() {
 	SetMetaServer(map[string]string{
-		ENV_DEV: "http://127.0.0.1:8080",
-		ENV_FAT: "http://127.0.0.2:8080",
-		ENV_UAT: "http://127.0.0.3:8080",
-		ENV_PRO: "http://127.0.0.4:8080",
+		//ENV_DEV: "http://127.0.0.1:8080",
+		//ENV_FAT: "http://127.0.0.2:8080",
+		//ENV_UAT: "http://127.0.0.3:8080",
+		//ENV_PRO: "http://127.0.0.4:8080",
+
+		ENV_DEV: "http://dev.apollo.ai-arena.qq.com",
+		ENV_FAT: "http://172.16.80.59:31760",
+		ENV_UAT: "http://172.16.0.157:30682",
+		ENV_PRO: "http://172.16.1.173:31639",
 	})
 	SetAppIDAndEnv("test_app", "local")
-
-	c, err := GetConfig()
-	if err != nil {
-		return nil, err
-	}
-	return c, nil
 }
 
 func getInst() (*Config, error) {
@@ -45,7 +40,7 @@ func getInst() (*Config, error) {
 // go test ./ -v -test.run=TestConfig_GetInt
 func TestConfig_GetInt(t *testing.T) {
 
-	c, err := getConfig()
+	c, err := GetConfig()
 	if err != nil {
 		t.Fatalf("apollo err: %s", err.Error())
 		t.Fail()
@@ -55,9 +50,9 @@ func TestConfig_GetInt(t *testing.T) {
 	t.Log(c.GetInt("sample_int", 0))
 }
 
-// go test ./ -v -test.run=TestConfig_GetString1
-func TestConfig_GetString1(t *testing.T) {
-	c, err := getConfig()
+// go test ./ -v -test.run=TestConfig_GetString
+func TestConfig_GetString(t *testing.T) {
+	c, err := GetConfig()
 	if err != nil {
 		t.Fatalf("apollo err: %s", err.Error())
 		t.Fail()
@@ -74,7 +69,7 @@ func TestConfig_GetString1(t *testing.T) {
 // go test ./ -v -test.run=TestConfig_Watch
 func TestConfig_Watch(t *testing.T) {
 
-	c, err := getConfig()
+	c, err := GetConfig()
 	if err != nil {
 		t.Fatalf("apollo err: %s", err.Error())
 		t.Fail()
@@ -100,7 +95,7 @@ func updateServiceHandler(n *Notice) {
 
 // go test ./ -v -test.run=TestConfig_GetList
 func TestConfig_GetList(t *testing.T) {
-	c, err := getConfig()
+	c, err := GetConfig()
 	if err != nil {
 		t.Fatalf("apollo err: %s", err.Error())
 		t.Fail()
@@ -114,7 +109,7 @@ func TestConfig_GetList(t *testing.T) {
 // go test ./ -v -test.run=TestConfig_GetMap
 func TestConfig_GetMap(t *testing.T) {
 
-	c, err := getConfig()
+	c, err := GetConfig()
 	if err != nil {
 		t.Fatalf("apollo err: %s", err.Error())
 		t.Fail()
@@ -130,7 +125,7 @@ func TestConfig_GetMap(t *testing.T) {
 // go test ./ -v -test.run=TestConfig_GetStruct
 func TestConfig_GetStruct(t *testing.T) {
 
-	c, err := getConfig()
+	c, err := GetConfig()
 	if err != nil {
 		t.Fatalf("apollo err: %s", err.Error())
 		t.Fail()
@@ -150,56 +145,28 @@ func TestConfig_GetStruct(t *testing.T) {
 // go test ./ -v -test.run=TestConfig_GetStringInOtherNamespace
 func TestConfig_GetStringInOtherNamespace(t *testing.T) {
 
-	c, err := getConfig()
-	if err != nil {
-		t.Fatalf("apollo err: %s", err.Error())
-		t.Fail()
-		return
-	}
-	str := c.GetStringByNameSpace("westudy.map.error_code", "3", "")
-	t.Log(str)
-	// return:  InvalidArgument（请求参数错误）
-
-	str2 := c.GetStringByNameSpace("westudy.grpc.middleware", "logger.blacklist", "")
-	t.Log(str2)
-}
-
-// go test ./ -v -test.run=TestConfig_GetString2
-func TestConfig_GetString2(t *testing.T) {
-	t.Log("os:", runtime.GOOS)
-
-	os.Setenv(ServiceKey, "test")
-	os.Setenv(EnvKey, ENV_FAT)
-
-	err := Start()
-	if err != nil {
-		t.Fatalf("apollo err: %s", err.Error())
-		t.Fail()
-		return
-	}
-
 	c, err := GetConfig()
 	if err != nil {
 		t.Fatalf("apollo err: %s", err.Error())
 		t.Fail()
 		return
 	}
+	str := c.GetStringByNameSpace("other_namespace", "other_key", "")
+	t.Log(str)
 
-	t.Log(c.GetString("sample_string"))
-}
-
-var c *Config
-
-func init() {
-	var err error
-	c, err = getConfig()
-	if err != nil {
-		log.Panicf("apollo err: %s", err.Error())
-	}
+	str2 := c.GetStringByNameSpace("other_namespace", "another_key", "")
+	t.Log(str2)
 }
 
 // go test -bench=. -benchmem -benchtime=3s -run=BenchmarkConfig_GetString
 func BenchmarkConfig_GetString(b *testing.B) {
+	c, err := GetConfig()
+	if err != nil {
+		b.Fatalf("apollo err: %s", err.Error())
+		b.Fail()
+		return
+	}
+
 	for i := 0; i < b.N; i++ {
 		c.GetString("sample_string")
 	}
