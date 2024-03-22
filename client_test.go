@@ -11,15 +11,10 @@ const EnvKey = "env"
 
 func init() {
 	SetMetaServer(map[string]string{
-		//ENV_DEV: "http://127.0.0.1:8080",
-		//ENV_FAT: "http://127.0.0.2:8080",
-		//ENV_UAT: "http://127.0.0.3:8080",
-		//ENV_PRO: "http://127.0.0.4:8080",
-
-		ENV_DEV: "http://dev.apollo.ai-arena.qq.com",
-		ENV_FAT: "http://172.16.80.59:31760",
-		ENV_UAT: "http://172.16.0.157:30682",
-		ENV_PRO: "http://172.16.1.173:31639",
+		ENV_DEV: "http://127.0.0.1:8080",
+		ENV_FAT: "http://127.0.0.2:8080",
+		ENV_UAT: "http://127.0.0.3:8080",
+		ENV_PRO: "http://127.0.0.4:8080",
 	})
 	SetAppIDAndEnv("test_app", "local")
 }
